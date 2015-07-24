@@ -85,7 +85,7 @@ namespace ProxmoxSharp.Client
 			return client.Execute<Upid>(request);
 		}
 
-		public IRestResponse<Upid> CreateCT(OpenvzCTTemplate template) {
+		public IRestResponse<Upid> CreateCT(OpenvzTemplate template) {
 			var client = new RestClient (baseUrl);
 			var request = new RestRequest (string.Format("nodes/{0}/openvz", node), Method.POST);
 			request.RequestFormat = DataFormat.Json;

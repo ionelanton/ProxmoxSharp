@@ -51,7 +51,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Client\OpenvzCT.cs" />
-    <Compile Include="Client\OpenvzCTTemplate.cs" />
+    <Compile Include="Client\OpenvzTemplate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

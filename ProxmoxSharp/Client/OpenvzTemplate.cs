@@ -2,7 +2,7 @@
 
 namespace ProxmoxSharp.Client
 {
-	public class OpenvzCTTemplate
+	public class OpenvzTemplate
 	{
 		public string ostemplate { get; set; }
 		public string vmid { get; set; }
