@@ -24,7 +24,7 @@ namespace ProxmoxSharp.Client
 		private OpenvzCTTemplate template;
 
 		[TestFixtureSetUp]
-		public void PrepareApiClientSetup() {
+		public void ApiClientSetup() {
 			
 			var appConfig = new AppConfig ();
 
