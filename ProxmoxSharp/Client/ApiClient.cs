@@ -34,10 +34,10 @@ namespace ProxmoxSharp.Client
 			return response;
 		}
 
-		public IRestResponse<OpenvzVm> CTStatus(string vmId) {
+		public IRestResponse<OpenvzCT> CTStatus(string vmId) {
 			var client = new RestClient (baseUrl);
 			var request = PrepareGetRequest (string.Format("nodes/{0}/openvz/{1}/status/current", this.node, vmId));
-			return client.Execute<OpenvzVm> (request);
+			return client.Execute<OpenvzCT> (request);
 		}
 
 		public IRestResponse<Upid> StartCT(string vmId) {
@@ -85,7 +85,7 @@ namespace ProxmoxSharp.Client
 			return client.Execute<Upid>(request);
 		}
 
-		public IRestResponse<Upid> CreateCT(OpenvzVmTemplate template) {
+		public IRestResponse<Upid> CreateCT(OpenvzCTTemplate template) {
 			var client = new RestClient (baseUrl);
 			var request = new RestRequest (string.Format("nodes/{0}/openvz", node), Method.POST);
 			request.RequestFormat = DataFormat.Json;

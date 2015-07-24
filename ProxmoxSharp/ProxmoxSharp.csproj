@@ -41,8 +41,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client\ApiClient.cs" />
     <Compile Include="Client\ApiTicket.cs" />
-    <Compile Include="Client\OpenvzVm.cs" />
-    <Compile Include="Client\OpenvzVmTemplate.cs" />
     <Compile Include="Client\Server.cs" />
     <Compile Include="Client\TaskLog.cs" />
     <Compile Include="Client\TaskStatus.cs" />
@@ -52,6 +50,8 @@
     <Compile Include="Util\AppConfig.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Client\OpenvzCT.cs" />
+    <Compile Include="Client\OpenvzCTTemplate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

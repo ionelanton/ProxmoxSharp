@@ -21,7 +21,7 @@ namespace ProxmoxSharp.Client
 		private Server server;
 		private string vmId;
 		private string pool;
-		private OpenvzVmTemplate template;
+		private OpenvzCTTemplate template;
 
 		[TestFixtureSetUp]
 		public void PrepareApiClientSetup() {
@@ -43,7 +43,7 @@ namespace ProxmoxSharp.Client
 
 			upid = client.TaskStatusList ().Data [0].upid;
 
-			template = new OpenvzVmTemplate {
+			template = new OpenvzCTTemplate {
 				cpus = "1",
 				password = "root",
 				disk = "8",

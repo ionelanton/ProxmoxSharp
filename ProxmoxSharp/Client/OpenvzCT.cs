@@ -2,7 +2,7 @@
 
 namespace ProxmoxSharp.Client
 {
-	public class OpenvzVm
+	public class OpenvzCT
 	{
 		public long maxswap { get; set; }
 		public long disk { get; set; }
