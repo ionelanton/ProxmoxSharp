@@ -10,9 +10,9 @@ namespace ProxmoxSharp.Client
 	{
 		private string baseUrl;
 		private string node;
-		private ApiTicket ApiTicket;
+		private ApiTicket apiTicket;
 
-		public const string TaskOk = "TASK OK";
+		private const string TaskOk = "TASK OK";
 		private const string RequestRootElement = "data";
 
 		public ApiClient (Server server, string node)
@@ -30,7 +30,7 @@ namespace ProxmoxSharp.Client
 			request.AddParameter ("realm", user.Realm);
 			request.RootElement = RequestRootElement;
 			var response = restClient.Execute<ApiTicket>(request);
-			ApiTicket = response.Data;
+			apiTicket = response.Data;
 			return response;
 		}
 
@@ -89,8 +89,8 @@ namespace ProxmoxSharp.Client
 			var client = new RestClient (baseUrl);
 			var request = new RestRequest (string.Format("nodes/{0}/openvz", node), Method.POST);
 			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", ApiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", ApiTicket.ticket);
+			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
 			request.RootElement = "root";
 			request.AddParameter ("ostemplate", template.ostemplate);
 			request.AddParameter ("vmid", template.vmid);
@@ -115,8 +115,8 @@ namespace ProxmoxSharp.Client
 		private RestRequest PreparePostRequest(string resource, string rootElement = RequestRootElement) {
 			var request = new RestRequest (resource, Method.POST);
 			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", ApiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", ApiTicket.ticket);
+			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
@@ -124,7 +124,7 @@ namespace ProxmoxSharp.Client
 		private RestRequest PrepareGetRequest(string resource, string rootElement = RequestRootElement) {
 			var request = new RestRequest (resource, Method.GET);
 			request.RequestFormat = DataFormat.Json;
-			request.AddCookie ("PVEAuthCookie", ApiTicket.ticket);
+			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
@@ -132,8 +132,8 @@ namespace ProxmoxSharp.Client
 		private RestRequest PrepareDeleteRequest(string resource, string rootElement = RequestRootElement) {
 			var request = new RestRequest (resource, Method.DELETE);
 			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", ApiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", ApiTicket.ticket);
+			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
