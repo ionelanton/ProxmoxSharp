@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxmoxSharp", "ProxmoxSharp\ProxmoxSharp.csproj", "{456F1F33-80AD-4BC7-8F04-6A1493453D8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxmoxSharpTest", "ProxmoxSharpTest\ProxmoxSharpTest.csproj", "{EFD12A13-9502-4B84-96D7-FBB31D2698EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{456F1F33-80AD-4BC7-8F04-6A1493453D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456F1F33-80AD-4BC7-8F04-6A1493453D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456F1F33-80AD-4BC7-8F04-6A1493453D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456F1F33-80AD-4BC7-8F04-6A1493453D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFD12A13-9502-4B84-96D7-FBB31D2698EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD12A13-9502-4B84-96D7-FBB31D2698EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD12A13-9502-4B84-96D7-FBB31D2698EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD12A13-9502-4B84-96D7-FBB31D2698EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
