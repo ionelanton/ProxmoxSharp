@@ -2,7 +2,7 @@
 
 namespace ProxmoxSharp.Client
 {
-	public class OpenvzTemplate
+	public class LxcTemplate
 	{
 		public string ostemplate { get; set; }
 		public string vmid { get; set; }
@@ -11,9 +11,9 @@ namespace ProxmoxSharp.Client
 		public string password { get; set; }
 		public string memory { get; set; }
 		public string swap { get; set; }
-		public string disk { get; set; }
-		public string cpus { get; set; }
-		public string ip_address { get; set; }
+		public string cpuunits { get; set; }
+		public string net { get; set; }
+		public string ostype { get; set; }
 		public string pool { get; set;}
 	}
 }

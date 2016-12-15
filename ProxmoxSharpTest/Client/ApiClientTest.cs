@@ -1,13 +1,10 @@
-﻿using System;
+﻿using System.Net;
 using NUnit.Framework;
-using IniParser;
-using RestSharp;
-using System.Net;
-using System.Dynamic;
-using System.Threading;
+using ProxmoxSharp.Client;
 using ProxmoxSharp.Util;
+using RestSharp;
 
-namespace ProxmoxSharp.Client
+namespace ProxmoxSharpTest.Client
 {
 	[TestFixture]
 	public class ApiClientTest
@@ -21,7 +18,7 @@ namespace ProxmoxSharp.Client
 		private Server server;
 		private string vmId;
 		private string pool;
-		private OpenvzTemplate template;
+		private LxcTemplate template;
 
 		[TestFixtureSetUp]
 		public void ApiClientSetup() {
@@ -37,20 +34,25 @@ namespace ProxmoxSharp.Client
 
 			client = new ApiClient (server, node);
 
-			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => { return true; }; 
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true; 
 
 			response = client.Login (user);
 
-			upid = client.TaskStatusList ().Data [0].upid;
+		    var tasks = client.TaskStatusList().Data;
 
-			template = new OpenvzTemplate {
-				cpus = "1",
-				password = "root",
-				disk = "8",
+		    if (tasks.Count > 0)
+		    {
+                upid =  tasks[0].upid;
+            }
+            
+			template = new LxcTemplate {
+				cpuunits = "1",
+				password = "password",
 				hostname = "api.proxmox.test",
-				ip_address = "192.168.1.234",
+				net = "name=eth0,bridge=vmbr0,hwaddr=DE:88:0F:D7:79:33,ip=dhcp,ip6=dhcp,type=veth",
 				memory = "1000",
-				ostemplate = "disk1:vztmpl/debian-7.0-standard_7.0-2_i386.tar.gz",
+				ostemplate = "disk1:vztmpl/debian-8.0-standard_8.6-1_amd64.tar.gz",
+                ostype = "debian",
 				storage = "disk1",
 				swap = "512",
 				vmid = vmId,
@@ -60,37 +62,37 @@ namespace ProxmoxSharp.Client
 
 		[Test]	
 		public void Login() {
-			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.OK));		
+			Assert.That(response.StatusCode, Is.EqualTo (HttpStatusCode.OK));		
 			Assert.That(response.Data.username, Is.EqualTo (user.Username + "@" + user.Realm));
 		}
 
 		[Test]
-		public void ManipulateCT() {
-			var response = client.CreateCT (template);
+		public void CreateAndDestroyLxcContainer() {
+			var response = client.CreateCt (template);
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.OK));
 			Assert.True (client.TaskHasFinished (response.Data.data));
 
-			response = client.StartCT (vmId);
+			response = client.StartCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 			Assert.True (client.TaskHasFinished (response.Data.data));
 
 
-			var statusResponse = client.CTStatus (vmId);
+			var statusResponse = client.CtStatus (vmId);
 			Assert.That (statusResponse.StatusCode, Is.EqualTo (HttpStatusCode.OK));
-			Assert.That (statusResponse.Data.status.AsVmStatus (), Is.EqualTo (VmStatus.running));
+			Assert.That (statusResponse.Data.Status.AsVmStatus (), Is.EqualTo (VmStatus.running));
 
-			response = client.StopCT (vmId);
+			response = client.StopCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 			Assert.True (client.TaskHasFinished (response.Data.data));
 
-			response = client.DeleteCT (vmId);
+			response = client.DeleteCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.OK));
 			Assert.True (client.TaskHasFinished (response.Data.data));
 		}
 
 		[Test]
-		public void CantGetStatusOfNonExistentCT() {
-			var response = client.CTStatus ("-100");
+		public void CantGetStatusOfNonExistentCt() {
+			var response = client.CtStatus ("-100");
 
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.Forbidden));
 			Assert.That (response.Data, Is.Null);

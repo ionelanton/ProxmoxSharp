@@ -1,6 +1,4 @@
-﻿using System;
-using RestSharp;
-using System.Net;
+﻿using RestSharp;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -8,52 +6,53 @@ namespace ProxmoxSharp.Client
 {
 	public class ApiClient
 	{
-		private string baseUrl;
-		private string node;
-		private ApiTicket apiTicket;
+		private readonly string _baseUrl;
+		private readonly string _node;
+		private ApiTicket _apiTicket;
 
 		private const string TaskOk = "TASK OK";
 		private const string RequestRootElement = "data";
 
 		public ApiClient (Server server, string node)
 		{
-			this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json/";
-			this.node = node;
+			_baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json/";
+			_node = node;
 		}
 
 		public IRestResponse<ApiTicket> Login(User user) {
-			var restClient = new RestClient (baseUrl);
-			var request = new RestRequest ("access/ticket", Method.POST);
-			request.RequestFormat = DataFormat.Json;
-			request.AddParameter ("username", user.Username);
+			var restClient = new RestClient (_baseUrl);
+		    var request = new RestRequest("access/ticket", Method.POST) {RequestFormat = DataFormat.Json};
+		    request.AddParameter ("username", user.Username);
 			request.AddParameter ("password", user.Password);
 			request.AddParameter ("realm", user.Realm);
 			request.RootElement = RequestRootElement;
 			var response = restClient.Execute<ApiTicket>(request);
-			apiTicket = response.Data;
+			_apiTicket = response.Data;
 			return response;
 		}
 
-		public IRestResponse<OpenvzCT> CTStatus(string vmId) {
-			var client = new RestClient (baseUrl);
-			var request = PrepareGetRequest (string.Format("nodes/{0}/openvz/{1}/status/current", this.node, vmId));
-			return client.Execute<OpenvzCT> (request);
+		public IRestResponse<Lxc> CtStatus(string vmId) {
+			var client = new RestClient (_baseUrl);
+			var request = PrepareGetRequest ($"nodes/{_node}/lxc/{vmId}/status/current");
+			var response = client.Execute<Lxc> (request);
+
+            return response;
 		}
 
-		public IRestResponse<Upid> StartCT(string vmId) {
-			var client = new RestClient (baseUrl);
-			var request = PreparePostRequest (string.Format ("nodes/{0}/openvz/{1}/status/start", node, vmId), "");
+		public IRestResponse<Upid> StartCt(string vmId) {
+			var client = new RestClient (_baseUrl);
+			var request = PreparePostRequest ($"nodes/{_node}/lxc/{vmId}/status/start", "");
 			return client.Execute<Upid>(request);
 		}
 
 		public IRestResponse<List<TaskLog>> TaskLog(string upid) {
-			var client = new RestClient (baseUrl);
-			var request = PrepareGetRequest (string.Format ("nodes/{0}/tasks/{1}/log", node, upid));
+			var client = new RestClient (_baseUrl);
+			var request = PrepareGetRequest ($"nodes/{_node}/tasks/{upid}/log");
 			return client.Execute<List<TaskLog>> (request);
 		}
 
 		public bool TaskHasFinished(string upid, int seconds = 30) {
-			var oneSecond = 1000;
+			const int oneSecond = 1000;
 			for (var i = 0; i < seconds * oneSecond;) {
 				var logs = TaskLog (upid).Data;
 				foreach (var log in logs) {
@@ -68,30 +67,30 @@ namespace ProxmoxSharp.Client
 		}
 
 		public IRestResponse<List<TaskStatus>> TaskStatusList() {
-			var client = new RestClient (baseUrl);
-			var request = PrepareGetRequest (string.Format ("nodes/{0}/tasks/", node));
-			return client.Execute<List<TaskStatus>>(request);
+			var client = new RestClient (_baseUrl);
+			var request = PrepareGetRequest ($"nodes/{_node}/tasks/");
+			var response = client.Execute<List<TaskStatus>>(request);
+            return response;
 		}
 
 		public IRestResponse<TaskStatus> TaskStatus(string upid) {
-			var client = new RestClient (baseUrl);
-			var request = PrepareGetRequest (string.Format ("nodes/{0}/tasks/{1}/status", node, upid));
+			var client = new RestClient (_baseUrl);
+			var request = PrepareGetRequest ($"nodes/{_node}/tasks/{upid}/status");
 			return client.Execute<TaskStatus>(request);
 		}
 
-		public IRestResponse<Upid> StopCT(string vmId) {
-			var client = new RestClient (baseUrl);
-			var request = PreparePostRequest (string.Format ("nodes/{0}/openvz/{1}/status/stop", node, vmId), "");
+		public IRestResponse<Upid> StopCt(string vmId) {
+			var client = new RestClient (_baseUrl);
+			var request = PreparePostRequest ($"nodes/{_node}/lxc/{vmId}/status/stop", "");
 			return client.Execute<Upid>(request);
 		}
 
-		public IRestResponse<Upid> CreateCT(OpenvzTemplate template) {
-			var client = new RestClient (baseUrl);
-			var request = new RestRequest (string.Format("nodes/{0}/openvz", node), Method.POST);
-			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
-			request.RootElement = "root";
+		public IRestResponse<Upid> CreateCt(LxcTemplate template) {
+			var client = new RestClient (_baseUrl);
+		    var request = new RestRequest($"nodes/{_node}/lxc", Method.POST) {RequestFormat = DataFormat.Json};
+		    request.AddHeader ("CSRFPreventionToken", _apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", _apiTicket.ticket);
+			//request.RootElement = "data";
 			request.AddParameter ("ostemplate", template.ostemplate);
 			request.AddParameter ("vmid", template.vmid);
 			request.AddParameter ("storage", template.storage);
@@ -99,41 +98,39 @@ namespace ProxmoxSharp.Client
 			request.AddParameter ("hostname", template.hostname);
 			request.AddParameter ("memory", template.memory);
 			request.AddParameter ("swap", template.swap);
-			request.AddParameter ("disk", template.disk);
-			request.AddParameter ("cpus", template.cpus);
-			request.AddParameter ("ip_address", template.ip_address);
+			request.AddParameter ("cpuunits", template.cpuunits);
+			request.AddParameter ("net0", template.net);
+			request.AddParameter ("ostype", template.ostype);
 			request.AddParameter ("pool", template.pool);
-			return client.Execute<Upid>(request);
+			var response = client.Execute<Upid>(request);
+		    return response;
 		}
 
-		public IRestResponse<Upid> DeleteCT(string vmId) {
-			var client = new RestClient (baseUrl);
-			var request = PrepareDeleteRequest (string.Format ("nodes/{0}/openvz/{1}", node, vmId), "");
+		public IRestResponse<Upid> DeleteCt(string vmId) {
+			var client = new RestClient (_baseUrl);
+			var request = PrepareDeleteRequest ($"nodes/{_node}/lxc/{vmId}", "");
 			return client.Execute<Upid>(request);
 		}
 
 		private RestRequest PreparePostRequest(string resource, string rootElement = RequestRootElement) {
-			var request = new RestRequest (resource, Method.POST);
-			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
+		    var request = new RestRequest(resource, Method.POST) {RequestFormat = DataFormat.Json};
+		    request.AddHeader ("CSRFPreventionToken", _apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", _apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
 
 		private RestRequest PrepareGetRequest(string resource, string rootElement = RequestRootElement) {
-			var request = new RestRequest (resource, Method.GET);
-			request.RequestFormat = DataFormat.Json;
-			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
+		    var request = new RestRequest(resource, Method.GET) {RequestFormat = DataFormat.Json};
+		    request.AddCookie ("PVEAuthCookie", _apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
 
 		private RestRequest PrepareDeleteRequest(string resource, string rootElement = RequestRootElement) {
-			var request = new RestRequest (resource, Method.DELETE);
-			request.RequestFormat = DataFormat.Json;
-			request.AddHeader ("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
-			request.AddCookie ("PVEAuthCookie", apiTicket.ticket);
+		    var request = new RestRequest(resource, Method.DELETE) {RequestFormat = DataFormat.Json};
+		    request.AddHeader ("CSRFPreventionToken", _apiTicket.CSRFPreventionToken);
+			request.AddCookie ("PVEAuthCookie", _apiTicket.ticket);
 			request.RootElement = rootElement;
 			return request;
 		}
