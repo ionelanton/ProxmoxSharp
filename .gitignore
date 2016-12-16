@@ -7,6 +7,10 @@
 *.userosscache
 *.sln.docstates
 
+# hg
+.hgignore
+.hg
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

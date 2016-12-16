@@ -4,16 +4,16 @@ namespace ProxmoxSharp.Client
 {
 	public class TaskStatus
 	{
-		public string exitstatus { get; set;}
-		public string status { get; set; }
-		public string upid { get; set; }
-		public string node { get; set; }
-		public long pid { get; set; }
-		public long starttime { get; set; }
-		public string user { get; set; }
-		public string type { get; set; }
-		public string id { get; set; }
-		public long pstart { get; set; }
+		public string Exitstatus { get; set;}
+		public string Status { get; set; }
+		public string Upid { get; set; }
+		public string Node { get; set; }
+		public long Pid { get; set; }
+		public long Starttime { get; set; }
+		public string User { get; set; }
+		public string Type { get; set; }
+		public string Id { get; set; }
+		public long Pstart { get; set; }
 	}
 }
 

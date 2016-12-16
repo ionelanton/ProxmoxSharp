@@ -42,21 +42,21 @@ namespace ProxmoxSharpTest.Client
 
 		    if (tasks.Count > 0)
 		    {
-                upid =  tasks[0].upid;
+                upid =  tasks[0].Upid;
             }
             
 			template = new LxcTemplate {
-				cpuunits = "1",
-				password = "password",
-				hostname = "api.proxmox.test",
-				net = "name=eth0,bridge=vmbr0,hwaddr=DE:88:0F:D7:79:33,ip=dhcp,ip6=dhcp,type=veth",
-				memory = "1000",
-				ostemplate = "disk1:vztmpl/debian-8.0-standard_8.6-1_amd64.tar.gz",
-                ostype = "debian",
-				storage = "disk1",
-				swap = "512",
-				vmid = vmId,
-				pool = pool,
+				Cpuunits = "1",
+				Password = "password",
+				Hostname = "api.proxmox.test",
+				Net = "name=eth0,bridge=vmbr0,hwaddr=DE:88:0F:D7:79:33,ip=dhcp,ip6=dhcp,type=veth",
+				Memory = "1000",
+				Ostemplate = "disk1:vztmpl/debian-8.0-standard_8.6-1_amd64.tar.gz",
+                Ostype = "debian",
+				Storage = "disk1",
+				Swap = "512",
+				Vmid = vmId,
+				Pool = pool,
 			};
 		}
 
@@ -70,11 +70,11 @@ namespace ProxmoxSharpTest.Client
 		public void CreateAndDestroyLxcContainer() {
 			var response = client.CreateCt (template);
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.OK));
-			Assert.True (client.TaskHasFinished (response.Data.data));
+			Assert.True (client.TaskHasFinished (response.Data.Data));
 
 			response = client.StartCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-			Assert.True (client.TaskHasFinished (response.Data.data));
+			Assert.True (client.TaskHasFinished (response.Data.Data));
 
 
 			var statusResponse = client.CtStatus (vmId);
@@ -83,15 +83,15 @@ namespace ProxmoxSharpTest.Client
 
 			response = client.StopCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-			Assert.True (client.TaskHasFinished (response.Data.data));
+			Assert.True (client.TaskHasFinished (response.Data.Data));
 
 			response = client.DeleteCt (vmId);
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.OK));
-			Assert.True (client.TaskHasFinished (response.Data.data));
+			Assert.True (client.TaskHasFinished (response.Data.Data));
 		}
 
 		[Test]
-		public void CantGetStatusOfNonExistentCt() {
+		public void CantGetStatusOfNonExistentLxcContainer() {
 			var response = client.CtStatus ("-100");
 
 			Assert.That (response.StatusCode, Is.EqualTo (HttpStatusCode.Forbidden));

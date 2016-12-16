@@ -56,7 +56,7 @@ namespace ProxmoxSharp.Client
 			for (var i = 0; i < seconds * oneSecond;) {
 				var logs = TaskLog (upid).Data;
 				foreach (var log in logs) {
-					if (log.t == TaskOk) {
+					if (log.T == TaskOk) {
 						return true;
 					}
 				}
@@ -91,17 +91,17 @@ namespace ProxmoxSharp.Client
 		    request.AddHeader ("CSRFPreventionToken", _apiTicket.CSRFPreventionToken);
 			request.AddCookie ("PVEAuthCookie", _apiTicket.ticket);
 			//request.RootElement = "data";
-			request.AddParameter ("ostemplate", template.ostemplate);
-			request.AddParameter ("vmid", template.vmid);
-			request.AddParameter ("storage", template.storage);
-			request.AddParameter ("password", template.password);
-			request.AddParameter ("hostname", template.hostname);
-			request.AddParameter ("memory", template.memory);
-			request.AddParameter ("swap", template.swap);
-			request.AddParameter ("cpuunits", template.cpuunits);
-			request.AddParameter ("net0", template.net);
-			request.AddParameter ("ostype", template.ostype);
-			request.AddParameter ("pool", template.pool);
+			request.AddParameter ("ostemplate", template.Ostemplate);
+			request.AddParameter ("vmid", template.Vmid);
+			request.AddParameter ("storage", template.Storage);
+			request.AddParameter ("password", template.Password);
+			request.AddParameter ("hostname", template.Hostname);
+			request.AddParameter ("memory", template.Memory);
+			request.AddParameter ("swap", template.Swap);
+			request.AddParameter ("cpuunits", template.Cpuunits);
+			request.AddParameter ("net0", template.Net);
+			request.AddParameter ("ostype", template.Ostype);
+			request.AddParameter ("pool", template.Pool);
 			var response = client.Execute<Upid>(request);
 		    return response;
 		}

@@ -4,17 +4,17 @@ namespace ProxmoxSharp.Client
 {
 	public class LxcTemplate
 	{
-		public string ostemplate { get; set; }
-		public string vmid { get; set; }
-		public string hostname { get; set; }
-		public string storage { get; set; }
-		public string password { get; set; }
-		public string memory { get; set; }
-		public string swap { get; set; }
-		public string cpuunits { get; set; }
-		public string net { get; set; }
-		public string ostype { get; set; }
-		public string pool { get; set;}
+		public string Ostemplate { get; set; }
+		public string Vmid { get; set; }
+		public string Hostname { get; set; }
+		public string Storage { get; set; }
+		public string Password { get; set; }
+		public string Memory { get; set; }
+		public string Swap { get; set; }
+		public string Cpuunits { get; set; }
+		public string Net { get; set; }
+		public string Ostype { get; set; }
+		public string Pool { get; set;}
 	}
 }
 
